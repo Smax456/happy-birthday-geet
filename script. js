@@ -1,14 +1,261 @@
-const app = document.getElementById("app");
+// ==========================================================================
+// CENTRALIZED STATE NAVIGATION ARCHITECTURE
+// ==========================================================================
+const StateEngine = {
+    currentPhase: 'loadingScreen',
+    
+    transition(nextPhaseId) {
+        const current = document.getElementById(this.currentPhase);
+        const next = document.getElementById(nextPhaseId);
+        
+        if (current && next) {
+            current.style.opacity = '0';
+            setTimeout(() => {
+                current.classList.add('hidden');
+                current.classList.remove('active');
+                
+                next.classList.remove('hidden');
+                setTimeout(() => {
+                    next.classList.add('active');
+                }, 50);
+            }, 1000);
+            this.currentPhase = nextPhaseId;
+        }
+    }
+};
 
-app.innerHTML = `
-<div style="
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:black;
-color:white;
-font-size:40px;">
-WORKING 🎉
-</div>
-`;
+// Start Journey Button Click Handler
+document.getElementById('startBtn').addEventListener('click', () => {
+    // Safely trigger audio stream initiation loop
+    const audio = document.getElementById('bgMusic');
+    audio.play().catch(err => console.log("Audio waiting for absolute focus: " + err));
+    
+    StateEngine.transition('storyScreen');
+    executeTypewriterAnimation();
+});
+
+// ==========================================================================
+// PHASE 2: IMMERSIVE TYPEWRITER STREAMER
+// ==========================================================================
+function executeTypewriterAnimation() {
+    const messageText = "Some people become family not because of blood... but because of the place they earn in our hearts.";
+    let characterIndex = 0;
+    const blockContainer = document.getElementById('storyText');
+    blockContainer.innerHTML = ""; 
+
+    const streamingClock = setInterval(() => {
+        blockContainer.innerHTML += messageText[characterIndex];
+        characterIndex++;
+        if (characterIndex >= messageText.length) {
+            clearInterval(streamingClock);
+            const nextButton = document.getElementById('nextBtn');
+            nextButton.style.display = 'inline-block';
+            nextButton.onclick = () => {
+                StateEngine.transition('birthdayRoom');
+                generateRoomBalloons();
+            };
+        }
+    }, 45);
+}
+
+// ==========================================================================
+// PHASE 3: INTERACTIVE CAKE DESIGNER & SEQUENTIAL CANDLES
+// ==========================================================================
+let appliedDecorationsCount = 0;
+const milestoneTargetCount = 4;
+
+document.querySelectorAll('.deco-btn').forEach(targetBtn => {
+    targetBtn.addEventListener('click', (event) => {
+        const itemEmoji = event.target.getAttribute('data-item');
+        const layerCanvas = document.getElementById('decorations-layer');
+        
+        // Spawn decoration with absolute mapped offsets on top of the cream tier
+        const decorationNode = document.createElement('span');
+        decorationNode.className = 'placed-topping';
+        decorationNode.innerText = itemEmoji;
+        decorationNode.style.left = `${Math.random() * 70 + 15}%`;
+        decorationNode.style.top = `${Math.random() * 30 + 35}%`;
+        layerCanvas.appendChild(decorationNode);
+        
+        event.target.disabled = true;
+        appliedDecorationsCount++;
+        
+        if (appliedDecorationsCount === milestoneTargetCount) {
+            initiateCandleSequence();
+        }
+    });
+});
+
+function initiateCandleSequence() {
+    document.getElementById('statusText').innerText = "✨ Truly Beautiful! Preparing your birthday candles...";
+    
+    setTimeout(() => {
+        const structuralGrid = document.getElementById('candlesContainer');
+        structuralGrid.classList.remove('hidden');
+        structuralGrid.innerHTML = ""; // Clean structural map array
+
+        // Instantly render exactly 14 nodes onto the DOM tree hidden
+        for (let idx = 0; idx < 14; idx++) {
+            const candleFrame = document.createElement('div');
+            candleFrame.className = 'candle';
+            candleFrame.innerHTML = '<div class="flame"></div>';
+            structuralGrid.appendChild(candleFrame);
+        }
+
+        // Feature 1: Sequential staggered chronological ignitions line up
+        const renderedCandlesList = document.querySelectorAll('.candles-grid .candle');
+        renderedCandlesList.forEach((candleNode, index) => {
+            setTimeout(() => {
+                candleNode.classList.add('ignited');
+                if (index === renderedCandlesList.length - 1) {
+                    exposeActionControl();
+                }
+            }, index * 200); // 200ms sequential intervals
+        });
+    }, 1200);
+}
+
+function exposeActionControl() {
+    const blowBtn = document.getElementById('actionBtn');
+    blowBtn.classList.remove('hidden');
+    blowBtn.onclick = executeCandleExtinction;
+}
+
+function executeCandleExtinction() {
+    // Feature 2: Smoke simulation after blowing out candles
+    document.querySelectorAll('.candles-grid .candle').forEach(candleNode => {
+        const activeFlame = candleNode.querySelector('.flame');
+        if (activeFlame) {
+            activeFlame.remove(); // Kill the flame
+            
+            // Inject smoke tail element directly into parent layer
+            const smokeElement = document.createElement('div');
+            smokeElement.className = 'smoke-trail';
+            candleNode.appendChild(smokeElement);
+        }
+    });
+
+    document.getElementById('statusText').innerText = "Make a wish, Geet! 🌌";
+    document.getElementById('actionBtn').classList.add('hidden');
+    
+    // Feature 3: Launch Premium Fireworks Canvas
+    triggerPremiumFireworksCanvas();
+    
+    setTimeout(() => {
+        StateEngine.transition('giftScreen');
+        initializeGiftModule();
+    }, 4000);
+}
+
+// ==========================================================================
+// FIREWORKS ENGINE (HTML5 HIGH-PERFORMANCE CANVAS CORRIDOR)
+// ==========================================================================
+function triggerPremiumFireworksCanvas() {
+    const contextCanvas = document.getElementById('fireworksCanvas');
+    const ctx = contextCanvas.getContext('2d');
+    contextCanvas.width = window.innerWidth;
+    contextCanvas.height = window.innerHeight;
+    
+    let fireworkParticlesCollection = [];
+    
+    class FireworkParticle {
+        constructor(startX, startY) {
+            this.x = startX;
+            this.y = startY;
+            this.velocityX = Math.random() * 8 - 4;
+            this.velocityY = Math.random() * 8 - 4;
+            this.hue = Math.random() * 360;
+            this.alpha = 1;
+            this.decaySpeed = Math.random() * 0.015 + 0.01;
+        }
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.alpha;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = `hsl(${this.hue}, 100%, 65%)`;
+            ctx.fill();
+            ctx.restore();
+        }
+        update() {
+            this.x += this.velocityX;
+            this.y += this.velocityY;
+            this.velocityY += 0.04; // Add gravity simulation lines
+            this.alpha -= this.decaySpeed;
+        }
+    }
+    
+    for (let loopIdx = 0; loopIdx < 8; loopIdx++) {
+        setTimeout(() => {
+            const randomXPoint = Math.random() * contextCanvas.width;
+            const randomYPoint = Math.random() * (contextCanvas.height * 0.4) + 120;
+            for (let burstCount = 0; burstCount < 65; burstCount++) {
+                fireworkParticlesCollection.push(new FireworkParticle(randomXPoint, randomYPoint));
+            }
+        }, loopIdx * 450);
+    }
+    
+    function executionLoop() {
+        ctx.clearRect(0, 0, contextCanvas.width, contextCanvas.height);
+        fireworkParticlesCollection = fireworkParticlesCollection.filter(node => node.alpha > 0);
+        fireworkParticlesCollection.forEach(node => { node.update(); node.draw(); });
+        if (fireworkParticlesCollection.length > 0 || document.getElementById('birthdayRoom').classList.contains('active')) {
+            requestAnimationFrame(executionLoop);
+        }
+    }
+    executionLoop();
+}
+
+// ==========================================================================
+// PHASE 4: 3D PRESENT DEPLOYMENT & HEART RAIN CELEBRATION
+// ==========================================================================
+function initializeGiftModule() {
+    const presentNode = document.querySelector('.gift-box-3d');
+    const tipText = document.getElementById('giftHint');
+    
+    presentNode.onclick = () => {
+        if (!presentNode.classList.contains('unfolded')) {
+            presentNode.classList.add('unfolded');
+            tipText.style.opacity = '0';
+            
+            setTimeout(() => {
+                presentNode.style.display = 'none';
+                const containerLetter = document.querySelector('.letter-wrapper');
+                containerLetter.classList.remove('hidden');
+                
+                // Final Step Trigger: Launch floating hearts rain loop
+                initiateHeartsRainLoop();
+            }, 900);
+        }
+    };
+}
+
+function initiateHeartsRainLoop() {
+    const fieldContainer = document.querySelector('.hearts-rain-container');
+    setInterval(() => {
+        const heartSpan = document.createElement('div');
+        heartSpan.className = 'floating-heart';
+        heartSpan.innerHTML = '❤️';
+        heartSpan.style.left = `${Math.random() * 100}vw`;
+        heartSpan.style.fontSize = `${Math.random() * 20 + 15}px`;
+        heartSpan.style.animationDuration = `${Math.random() * 3 + 3}s`;
+        fieldContainer.appendChild(heartSpan);
+        
+        setTimeout(() => { heartSpan.remove(); }, 5000);
+    }, 250);
+}
+
+function generateRoomBalloons() {
+    const fieldBalloons = document.querySelector('.balloons-container');
+    const colorPalettes = ['#ff4fa0', '#8b5cf6', '#3b82f6', '#22c55e', '#f59e0b'];
+    for (let count = 0; count < 15; count++) {
+        const itemBalloon = document.createElement('div');
+        itemBalloon.className = 'balloon-item';
+        itemBalloon.style.background = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+        itemBalloon.style.left = `${Math.random() * 95}%`;
+        itemBalloon.style.animationDuration = `${Math.random() * 6 + 9}s`;
+        itemBalloon.style.animationDelay = `${Math.random() * 5}s`;
+        fieldBalloons.appendChild(itemBalloon);
+    }
+}
+ 
