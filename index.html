@@ -3,101 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Universe For Geet ❤️</title>
+    <title>Happy 14th Birthday Geet! 🎂</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="space-background">
-        <div class="stars layer-fast"></div>
-        <div class="stars layer-slow"></div>
-        <div class="moonGlow"></div>
-        <div class="shootingStar"></div>
-    </div>
+    <div class="stars-container" id="starsContainer"></div>
 
-    <audio id="bgMusic" loop preload="auto">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+    <section id="section1" class="active">
+        <div class="moon"></div>
+        <div class="shooting-star"></div>
+        <h1 class="glow-text">A Magical Journey Awaits...</h1>
+        <button class="btn" onclick="nextSection(1, 2)">Begin Journey ✨</button>
+    </section>
 
-    <div id="loadingScreen" class="phase active">
-        <div class="content">
-            <h3 class="smallText">Some gifts are wrapped in paper...</h3>
-            <h1 class="mainTitle">This one <span>was wrapped in stars.</span></h1>
-            <p class="subtitle">Made especially for <strong>Geet ❤️</strong><br><br>by aman</p>
-            <button id="startBtn" class="magic-btn">✨ Begin Journey ✨</button>
-
+    <section id="section2">
+        <div class="story-box">
+            <p id="typewriter"></p>
+            <button id="storyBtn" class="btn hidden" onclick="nextSection(2, 3)">Continue ✨</button>
         </div>
-    </div>
+    </section>
 
-    <div id="storyScreen" class="phase hidden">
-        <div class="storyPage">
-            <h1>Hello Geet ❤️</h1>
-            <p id="storyText"></p>
-            <button id="nextBtn" class="magic-btn" style="display: none;">Continue ✨</button>
+    <section id="section3">
+        <h2>🎂 Decorate Geet's Cake! 🎂</h2>
+        <p>Click all 4 toppings to proceed:</p>
+        <div class="topping-buttons">
+            <button class="top-btn" onclick="addTopping('cherry')">🍒 Add Cherries</button>
+            <button class="top-btn" onclick="addTopping('chocolate')">🍫 Add Chocolate</button>
+            <button class="top-btn" onclick="addTopping('sprinkle')">✨ Add Sprinkles</button>
+            <button class="top-btn" onclick="addTopping('flower')">🌸 Add Flowers</button>
         </div>
-    </div>
-
-    <div id="birthdayRoom" class="phase hidden">
-        <div class="balloons-container"></div>
-        <canvas id="fireworksCanvas"></canvas>
-
-        <h1 class="room-title">🎂 Happy Birthday Geet ❤️</h1>
-        <p id="statusText">Decorate your birthday cake...</p>
-
-        <div class="cake-3d">
-            <div class="plate-3d"></div>
-            <div class="cake-layer base-3d"></div>
-            <div class="cake-layer middle-3d"></div>
-            <div class="cake-layer top-3d"></div>
-            <div class="frosting-cream"></div>
-            <div class="chocolate-drips">
-                <div class="drip-drop d1"></div>
-                <div class="drip-drop d2"></div>
-                <div class="drip-drop d3"></div>
-            </div>
-            
-            <div id="decorations-layer"></div>
-
-            <div id="candlesContainer" class="candles-grid hidden"></div>
-        </div>
-
-        <div class="controls">
-            <button class="deco-btn" data-item="🍒">🍒 Cherries</button>
-            <button class="deco-btn" data-item="🍫">🍫 Chocolate</button>
-            <button class="deco-btn" data-item="✨">✨ Sprinkles</button>
-            <button class="deco-btn" data-item="🌸">🌸 Flowers</button>
-        </div>
-
-        <button id="actionBtn" class="magic-btn hidden" style="margin-top: 25px;">💨 Blow Candles</button>
-    </div>
-
-    <div id="giftScreen" class="phase hidden">
-        <div class="hearts-rain-container"></div>
-        
-        <div class="gift-viewport">
-            <p id="giftHint" style="color: #cbd5e1; margin-bottom: 30px; font-size: 18px; letter-spacing: 1px;">🎁 Tap the magical gift to open it...</p>
-            <div class="gift-box-3d">
-                <div class="box-face front"></div>
-                <div class="box-face back"></div>
-                <div class="box-face left"></div>
-                <div class="box-face right"></div>
-                <div class="box-face top-lid"></div>
-                <div class="box-face bottom"></div>
+        <div class="cake-container">
+            <div class="cake-base">
+                <div id="cake-cherries" class="topping hidden">🍒🍒🍒</div>
+                <div id="cake-chocolate" class="topping hidden">🍫🍫🍫</div>
+                <div id="cake-sprinkles" class="topping hidden">✨✨✨</div>
+                <div id="cake-flowers" class="topping hidden">🌸🌸🌸</div>
             </div>
         </div>
+        <button id="cakeNextBtn" class="btn hidden" onclick="nextSection(3, 4)">Next: Light the Candles 🕯️</button>
+    </section>
 
-        <div class="letter-wrapper hidden">
-            <div class="letter">
-                <h2>To My Favorite Person, 💌</h2>
-                <p>Some people become family not because of blood... but because of the place they earn in our hearts.</p>
-                <p>Wishing you the happiest, most magical birthday filled with stars and endless smiles. You deserve the entire universe! ✨</p>
-                <p class="signature">With love always,<br><strong>aman</strong></p>
+    <section id="section4">
+        <h2>🕯️ 14 Birthday Candles 🕯️</h2>
+        <div class="candles-grid" id="candlesGrid"></div>
+        <button id="blowBtn" class="btn hidden" onclick="blowCandles()">💨 Blow Candles</button>
+    </section>
+
+    <section id="section5">
+        <div class="fireworks-display" id="fireworksDisplay"></div>
+        <h1 class="wish-text">❤️ Make a wish, Geet... ❤️</h1>
+    </section>
+
+    <section id="section6">
+        <h2>🎁 A Special Gift dropped for you! 🎁</h2>
+        <div class="gift-box" onclick="openGift()">
+            <div class="gift-lid" id="giftLid">🎀</div>
+            <div class="gift-body">🎁</div>
+        </div>
+    </section>
+
+    <section id="section7">
+        <div class="letter-scroll">
+            <div class="letter-content">
+                <h3>To My Dearest Sister Geet, 🌸</h3>
+                <p>Happy 14th Birthday! Watching you grow up has been an absolute joy. You bring so much light, laughter, and happiness into our lives every single day.</p>
+                <p>Never forget how incredibly smart and capable you are. Keep shining bright, chasing your dreams, and always being your amazing self. I will always be here to support you, no matter what!</p>
+                <p>With endless love,</p>
+                <p><strong>Aman</strong></p>
             </div>
         </div>
-    </div>
+        <button class="btn" onclick="nextSection(7, 8)">See Final Surprise ❤️</button>
+    </section>
+
+    <section id="section8">
+        <div class="hearts-container" id="heartsContainer"></div>
+        <h1 class="final-title">💖 Happy 14th Birthday Geet! 💖</h1>
+        <p class="final-sub">May all your dreams come true this year! ✨</p>
+        <div class="credits">Made with ❤️ by Aman</div>
+    </section>
 
     <script src="script.js"></script>
 </body>
