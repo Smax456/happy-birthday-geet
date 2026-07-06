@@ -3,86 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy 14th Birthday Geet! 🎂</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Happy Birthday, Sis!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff7597;
+            --secondary: #ffb3c6;
+            --dark: #2b2d42;
+            --light: #fff0f3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            background-color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        section {
+            padding: 80px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .cursive {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            color: var(--primary);
+        }
+
+        /* 1. HERO SECTION */
+        #hero {
+            background: linear-gradient(135deg, var(--light), #ffffff);
+        }
+        #hero h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+        .btn {
+            margin-top: 30px;
+            padding: 12px 30px;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            background-color: #e05375;
+            transform: translateY(-2px);
+        }
+
+        /* 2. TIMELINE SECTION */
+        #timeline { background-color: #ffffff; }
+        .timeline-container {
+            max-width: 600px;
+            border-left: 3px solid var(--secondary);
+            padding-left: 20px;
+            text-align: left;
+        }
+        .timeline-item {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary);
+            border-radius: 50%;
+        }
+
+        /* 3. QUALITIES SECTION */
+        #qualities { background-color: var(--light); }
+        .grid {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1000px;
+            margin-top: 30px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            flex: 1;
+            min-width: 250px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* 4. GALLERY SECTION */
+        #gallery { background-color: #ffffff; }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            max-width: 900px;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .gallery-grid img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: 0.3s;
+        }
+        .gallery-grid img:hover {
+            transform: scale(1.03);
+        }
+
+        /* 5. EMOTIONAL NOTE */
+        #note {
+            background: linear-gradient(rgba(255, 240, 243, 0.8), rgba(255, 240, 243, 0.8)), url('https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .note-box {
+            max-width: 700px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* 6. INTERACTIVE WISHES */
+        #interactive { background-color: #ffffff; }
+        .gift-box {
+            font-size: 5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin: 20px;
+        }
+        .gift-box:hover {
+            transform: scale(1.2) rotate(5deg);
+        }
+        #surprise-msg {
+            margin-top: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            min-height: 40px;
+        }
+
+        /* 7. FOOTER */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="stars-container" id="starsContainer"></div>
-
-    <section id="section1" class="active">
-        <div class="moon"></div>
-        <div class="shooting-star"></div>
-        <h1 class="glow-text">A Magical Journey Awaits...</h1>
-        <button class="btn" onclick="nextSection(1, 2)">Begin Journey ✨</button>
+    <section id="hero">
+        <p class="cursive">Happy Birthday</p>
+        <h1>To the Best Sister Ever!</h1>
+        <p>Professional scatterbrain, full-time guide, and lifetime best friend.</p>
+        <a href="#timeline" class="btn">Explore Memories</a>
     </section>
 
-    <section id="section2">
-        <div class="story-box">
-            <p id="typewriter"></p>
-            <button id="storyBtn" class="btn hidden" onclick="nextSection(2, 3)">Continue ✨</button>
-        </div>
-    </section>
-
-    <section id="section3">
-        <h2>🎂 Decorate Geet's Cake! 🎂</h2>
-        <p>Click all 4 toppings to proceed:</p>
-        <div class="topping-buttons">
-            <button class="top-btn" onclick="addTopping('cherry')">🍒 Add Cherries</button>
-            <button class="top-btn" onclick="addTopping('chocolate')">🍫 Add Chocolate</button>
-            <button class="top-btn" onclick="addTopping('sprinkle')">✨ Add Sprinkles</button>
-            <button class="top-btn" onclick="addTopping('flower')">🌸 Add Flowers</button>
-        </div>
-        <div class="cake-container">
-            <div class="cake-base">
-                <div id="cake-cherries" class="topping hidden">🍒🍒🍒</div>
-                <div id="cake-chocolate" class="topping hidden">🍫🍫🍫</div>
-                <div id="cake-sprinkles" class="topping hidden">✨✨✨</div>
-                <div id="cake-flowers" class="topping hidden">🌸🌸🌸</div>
+    <section id="timeline">
+        <h2>Our Journey</h2>
+        <div class="timeline-container">
+            <div class="timeline-item">
+                <h3>The Early Days</h3>
+                <p>Growing up together, sharing toys, and fighting over the TV remote.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>The Milestones</h3>
+                <p>Watching you cross major milestones and celebrating every single win with you.</p>
+            </div>
+            <div class="timeline-item">
+                <h3>To the Future</h3>
+                <p>No matter where life takes us, I’ll always have your back.</p>
             </div>
         </div>
-        <button id="cakeNextBtn" class="btn hidden" onclick="nextSection(3, 4)">Next: Light the Candles 🕯️</button>
     </section>
 
-    <section id="section4">
-        <h2>🕯️ 14 Birthday Candles 🕯️</h2>
-        <div class="candles-grid" id="candlesGrid"></div>
-        <button id="blowBtn" class="btn hidden" onclick="blowCandles()">💨 Blow Candles</button>
-    </section>
-
-    <section id="section5">
-        <div class="fireworks-display" id="fireworksDisplay"></div>
-        <h1 class="wish-text">❤️ Make a wish, Geet... ❤️</h1>
-    </section>
-
-    <section id="section6">
-        <h2>🎁 A Special Gift dropped for you! 🎁</h2>
-        <div class="gift-box" onclick="openGift()">
-            <div class="gift-lid" id="giftLid">🎀</div>
-            <div class="gift-body">🎁</div>
-        </div>
-    </section>
-
-    <section id="section7">
-        <div class="letter-scroll">
-            <div class="letter-content">
-                <h3>To My Dearest Sister Geet, 🌸</h3>
-                <p>Happy 14th Birthday! Watching you grow up has been an absolute joy. You bring so much light, laughter, and happiness into our lives every single day.</p>
-                <p>Never forget how incredibly smart and capable you are. Keep shining bright, chasing your dreams, and always being your amazing self. I will always be here to support you, no matter what!</p>
-                <p>With endless love,</p>
-                <p><strong>Aman</strong></p>
+    <section id="qualities">
+        <h2>Three Things I Admire In You</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>🌟 Resilience</h3>
+                <p>You handle every challenge with absolute grace and professionalism.</p>
+            </div>
+            <div class="card">
+                <h3>❤️ Kindness</h3>
+                <p>You have a heart that always puts family and loved ones first.</p>
+            </div>
+            <div class="card">
+                <h3>🧠 Wisdom</h3>
+                <p>Your advice is always grounding, mature, and exactly what I need to hear.</p>
             </div>
         </div>
-        <button class="btn" onclick="nextSection(7, 8)">See Final Surprise ❤️</button>
     </section>
 
-    <section id="section8">
-        <div class="hearts-container" id="heartsContainer"></div>
-        <h1 class="final-title">💖 Happy 14th Birthday Geet! 💖</h1>
-        <p class="final-sub">May all your dreams come true this year! ✨</p>
-        <div class="credits">Made with ❤️ by Aman</div>
+    <section id="gallery">
+        <h2>Captured Moments</h2>
+        <p>A few snapshots of your brilliant smile.</p>
+        <div class="gallery-grid">
+            <img src="https://images.unsplash.com/photo-1549417229-aa67d3263c09?auto=format&fit=crop&w=400&q=80" alt="Memory 1">
+            <img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&w=400&q=80" alt="Memory 2">
+            <img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=400&q=80" alt="Memory 3">
+        </div>
     </section>
 
-    <script src="script.js"></script>
+    <section id="note">
+        <div class="note-box">
+            <h2>A Letter To You</h2>
+            <p>“To my amazing sister—thank you for being the constant anchor in my life. Your strength inspires me every single day, and your kindness makes the world a much better place. I am incredibly proud of the professional, wonderful woman you’ve become. May this year bring you all the success, joy, and peace you deserve.”</p>
+        </div>
+    </section>
+
+    <section id="interactive">
+        <h2>A Little Surprise</h2>
+        <p>Click the gift box below to unwrap your wish!</p>
+        <div class="gift-box" onclick="revealWish()">🎁</div>
+        <div id="surprise-msg"></div>
+    </section>
+
+    <footer>
+        <p>Cheers to another amazing year around the sun! 🥂</p>
+        <p style="margin-top: 10px; opacity: 0.7;">Made with ❤️ by your brother | Hosted proudly on GitHub</p>
+    </footer>
+
+    <script>
+        function revealWish() {
+            const wishes = [
+                "✨ May all your wildest dreams come true this year!",
+                "🚀 May your professional journey scale brand new heights!",
+                "🍰 Unlimited cake, laughter, and zero stress for the next 365 days!",
+                "🌟 Keep shining exactly the way you do!"
+            ];
+            const randomWish = wishes[Math.floor(Math.random() * wishes.length)];
+            const msgDiv = document.getElementById('surprise-msg');
+            msgDiv.innerText = randomWish;
+            
+            // Add a slight pop effect to the gift box
+            const gift = document.querySelector('.gift-box');
+            gift.style.transform = "scale(1.3)";
+            setTimeout(() => gift.style.transform = "scale(1)", 200);
+        }
+    </script>
 </body>
 </html>
