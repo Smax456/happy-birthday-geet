@@ -1,262 +1,134 @@
-// Central State Engine Manager
-const StateEngine = {
-    currentPhase: 'loadingScreen',
-    
-    transition(nextPhaseId) {
-        const current = document.getElementById(this.currentPhase);
-        const next = document.getElementById(nextPhaseId);
-        
-        if (current && next) {
-            current.style.opacity = '0';
-            setTimeout(() => {
-                current.classList.add('hidden');
-                current.classList.remove('active');
-                
-                next.classList.remove('hidden');
-                setTimeout(() => {
-                    next.classList.add('active');
-                }, 50);
-            }, 1000);
-            this.currentPhase = nextPhaseId;
-        }
-    }
-};
-
-// Wait until the DOM is loaded to attach click events safely
-document.addEventListener('DOMContentLoaded', () => {
-    const startBtn = document.getElementById('startBtn');
-    if (startBtn) {
-        startBtn.addEventListener('click', () => {
-            const audio = document.getElementById('bgMusic');
-            if (audio) {
-                audio.play().catch(err => console.log("Audio waiting for interaction: " + err));
-            }
-            StateEngine.transition('storyScreen');
-            executeTypewriterAnimation();
-        });
-    }
-});
-
-// Phase 2: Typewriter Logic
-function executeTypewriterAnimation() {
-    const messageText = "Some people become family not because of blood... but because of the place they earn in our hearts.";
-    let characterIndex = 0;
-    const blockContainer = document.getElementById('storyText');
-    if (!blockContainer) return;
-    blockContainer.innerHTML = ""; 
-
-    const streamingClock = setInterval(() => {
-        blockContainer.innerHTML += messageText[characterIndex];
-        characterIndex++;
-        if (characterIndex >= messageText.length) {
-            clearInterval(streamingClock);
-            const nextButton = document.getElementById('nextBtn');
-            if (nextButton) {
-                nextButton.style.display = 'inline-block';
-                nextButton.onclick = () => {
-                    StateEngine.transition('birthdayRoom');
-                    generateRoomBalloons();
-                };
-            }
-        }
-    }, 45);
+// INITIALIZE BACKGROUND STARS
+const starsContainer = document.getElementById('starsContainer');
+for (let i = 0; i < 100; i++) {
+    let star = document.createElement('div');
+    star.className = 'star';
+    star.style.width = star.style.height = Math.random() * 3 + 'px';
+    star.style.left = Math.random() * 100 + 'vw';
+    star.style.top = Math.random() * 100 + 'vh';
+    star.style.animationDelay = Math.random() * 2 + 's';
+    starsContainer.appendChild(star);
 }
 
-// Phase 3: Room Decorations & Candles
-let appliedDecorationsCount = 0;
-const milestoneTargetCount = 4;
+// SECTION NAVIGATION FUNCTION
+function nextSection(current, next) {
+    document.getElementById(`section${current}`).classList.remove('active');
+    document.getElementById(`section${next}`).classList.add('active');
 
-document.addEventListener('click', (event) => {
-    if (event.target.classList.contains('deco-btn')) {
-        const itemEmoji = event.target.getAttribute('data-item');
-        const layerCanvas = document.getElementById('decorations-layer');
-        
-        const decorationNode = document.createElement('span');
-        decorationNode.className = 'placed-topping';
-        decorationNode.innerText = itemEmoji;
-        decorationNode.style.left = `${Math.random() * 70 + 15}%`;
-        decorationNode.style.top = `${Math.random() * 30 + 35}%`;
-        if (layerCanvas) layerCanvas.appendChild(decorationNode);
-        
-        event.target.disabled = true;
-        appliedDecorationsCount++;
-        
-        if (appliedDecorationsCount === milestoneTargetCount) {
-            initiateCandleSequence();
-        }
-    }
-});
-
-function initiateCandleSequence() {
-    const statusText = document.getElementById('statusText');
-    if (statusText) statusText.innerText = "✨ Truly Beautiful! Preparing your birthday candles...";
-    
-    setTimeout(() => {
-        const structuralGrid = document.getElementById('candlesContainer');
-        if (!structuralGrid) return;
-        structuralGrid.classList.remove('hidden');
-        structuralGrid.innerHTML = "";
-
-        for (let idx = 0; idx < 14; idx++) {
-            const candleFrame = document.createElement('div');
-            candleFrame.className = 'candle';
-            candleFrame.innerHTML = '<div class="flame"></div>';
-            structuralGrid.appendChild(candleFrame);
-        }
-
-        const renderedCandlesList = document.querySelectorAll('.candles-grid .candle');
-        renderedCandlesList.forEach((candleNode, index) => {
-            setTimeout(() => {
-                candleNode.classList.add('ignited');
-                if (index === renderedCandlesList.length - 1) {
-                    exposeActionControl();
-                }
-            }, index * 200);
-        });
-    }, 1200);
+    if (next === 2) startTypewriter();
+    if (next === 4) generateCandles();
 }
 
-function exposeActionControl() {
-    const blowBtn = document.getElementById('actionBtn');
-    if (blowBtn) {
-        blowBtn.classList.remove('hidden');
-        blowBtn.onclick = executeCandleExtinction;
+// SECTION 2: TYPEWRITER EFFECT
+const message = "Hey Geet, you are turning 14 today! 🎉 Time flies so incredibly fast. I've built this little world just for you to celebrate your special day. Click below to explore your birthday surprises! 💖";
+let index = 0;
+function startTypewriter() {
+    const textEl = document.getElementById('typewriter');
+    function type() {
+        if (index < message.length) {
+            textEl.innerHTML += message.charAt(index);
+            index++;
+            setTimeout(type, 40);
+        } else {
+            document.getElementById('storyBtn').classList.remove('hidden');
+        }
+    }
+    type();
+}
+
+// SECTION 3: CAKE DECORATION
+let toppingsAdded = new Set();
+function addTopping(type) {
+    document.getElementById(`cake-${type}s`).classList.remove('hidden');
+    toppingsAdded.add(type);
+    if (toppingsAdded.size === 4) {
+        document.getElementById('cakeNextBtn').classList.remove('hidden');
     }
 }
 
-function executeCandleExtinction() {
-    document.querySelectorAll('.candles-grid .candle').forEach(candleNode => {
-        const activeFlame = candleNode.querySelector('.flame');
-        if (activeFlame) {
-            activeFlame.remove();
-            const smokeElement = document.createElement('div');
-            smokeElement.className = 'smoke-trail';
-            candleNode.appendChild(smokeElement);
-        }
-    });
-
-    const statusText = document.getElementById('statusText');
-    if (statusText) statusText.innerText = "Make a wish, Geet! 🌌";
-    const actionBtn = document.getElementById('actionBtn');
-    if (actionBtn) actionBtn.classList.add('hidden');
-    
-    triggerPremiumFireworksCanvas();
-    
-    setTimeout(() => {
-        StateEngine.transition('giftScreen');
-        initializeGiftModule();
-    }, 4000);
-}
-
-// Fireworks Engine
-function triggerPremiumFireworksCanvas() {
-    const contextCanvas = document.getElementById('fireworksCanvas');
-    if (!contextCanvas) return;
-    const ctx = contextCanvas.getContext('2d');
-    contextCanvas.width = window.innerWidth;
-    contextCanvas.height = window.innerHeight;
-    
-    let fireworkParticlesCollection = [];
-    
-    class FireworkParticle {
-        constructor(startX, startY) {
-            this.x = startX;
-            this.y = startY;
-            this.velocityX = Math.random() * 8 - 4;
-            this.velocityY = Math.random() * 8 - 4;
-            this.hue = Math.random() * 360;
-            this.alpha = 1;
-            this.decaySpeed = Math.random() * 0.015 + 0.01;
-        }
-        draw() {
-            ctx.save();
-            ctx.globalAlpha = this.alpha;
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, 3.5, 0, Math.PI * 2);
-            ctx.fillStyle = `hsl(${this.hue}, 100%, 65%)`;
-            ctx.fill();
-            ctx.restore();
-        }
-        update() {
-            this.x += this.velocityX;
-            this.y += this.velocityY;
-            this.velocityY += 0.04;
-            this.alpha -= this.decaySpeed;
-        }
-    }
-    
-    for (let loopIdx = 0; loopIdx < 8; loopIdx++) {
+// SECTION 4: CANDLES INTERACTIVITY
+function generateCandles() {
+    const grid = document.getElementById('candlesGrid');
+    grid.innerHTML = '';
+    for (let i = 1; i <= 14; i++) {
         setTimeout(() => {
-            const randomXPoint = Math.random() * contextCanvas.width;
-            const randomYPoint = Math.random() * (contextCanvas.height * 0.4) + 120;
-            for (let burstCount = 0; burstCount < 65; burstCount++) {
-                fireworkParticlesCollection.push(new FireworkParticle(randomXPoint, randomYPoint));
-            }
-        }, loopIdx * 450);
-    }
-    
-    function executionLoop() {
-        ctx.clearRect(0, 0, contextCanvas.width, contextCanvas.height);
-        fireworkParticlesCollection = fireworkParticlesCollection.filter(node => node.alpha > 0);
-        fireworkParticlesCollection.forEach(node => { node.update(); node.draw(); });
-        if (fireworkParticlesCollection.length > 0 || document.getElementById('birthdayRoom').classList.contains('active')) {
-            requestAnimationFrame(executionLoop);
-        }
-    }
-    executionLoop();
-}
-
-// Gift Module Interaction
-function initializeGiftModule() {
-    const presentNode = document.querySelector('.gift-box-3d');
-    const tipText = document.getElementById('giftHint');
-    
-    if (presentNode) {
-        presentNode.onclick = () => {
-            if (!presentNode.classList.contains('unfolded')) {
-                presentNode.classList.add('unfolded');
-                if (tipText) tipText.style.opacity = '0';
-                
-                setTimeout(() => {
-                    presentNode.style.display = 'none';
-                    const containerLetter = document.querySelector('.letter-wrapper');
-                    if (containerLetter) containerLetter.classList.remove('hidden');
-                    initiateHeartsRainLoop();
-                }, 900);
-            }
-        };
+            let wrapper = document.createElement('div');
+            wrapper.className = 'candle-wrapper';
+            wrapper.innerHTML = `<div class="flame" id="flame-${i}"></div><div class="candle-stick"></div>`;
+            grid.appendChild(wrapper);
+            
+            // Auto light up
+            setTimeout(() => {
+                document.getElementById(`flame-${i}`).classList.add('lit');
+                if (i === 14) document.getElementById('blowBtn').classList.remove('hidden');
+            }, 300);
+        }, i * 300);
     }
 }
 
-// Decoration and Background Animators
-function initiateHeartsRainLoop() {
-    const fieldContainer = document.querySelector('.hearts-rain-container');
-    if (!fieldContainer) return;
-    setInterval(() => {
-        const heartSpan = document.createElement('div');
-        heartSpan.className = 'floating-heart';
-        heartSpan.innerHTML = '❤️';
-        heartSpan.style.left = `${Math.random() * 100}vw`;
-        heartSpan.style.fontSize = `${Math.random() * 20 + 15}px`;
-        heartSpan.style.animationDuration = `${Math.random() * 3 + 3}s`;
-        fieldContainer.appendChild(heartSpan);
+function blowCandles() {
+    for (let i = 1; i <= 14; i++) {
+        let flame = document.getElementById(`flame-${i}`);
+        flame.classList.remove('lit');
+        flame.classList.add('blown');
+    }
+    setTimeout(() => nextSection(4, 5), 1500);
+    setTimeout(triggerFireworks, 1600);
+}
+
+// SECTION 5: PREMIUM FIREWORKS ENGINE
+function triggerFireworks() {
+    const container = document.getElementById('fireworksDisplay');
+    let duration = 4000; // 4 second celebration
+    let interval = setInterval(() => {
+        createExplosion(container);
+    }, 400);
+
+    setTimeout(() => {
+        clearInterval(interval);
+        nextSection(5, 6);
+    }, duration);
+}
+
+function createExplosion(container) {
+    const x = Math.random() * window.innerWidth;
+    const y = Math.random() * (window.innerHeight * 0.6);
+    const colors = ['#ff416c', '#ff4b2b', '#00f2fe', '#4facfe', '#fecfef', '#ffea9f'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    for (let i = 0; i < 40; i++) {
+        let p = document.createElement('div');
+        p.className = 'fw-particle';
+        p.style.backgroundColor = color;
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
         
-        setTimeout(() => { heartSpan.remove(); }, 5000);
-    }, 250);
-}
-
-function generateRoomBalloons() {
-    const fieldBalloons = document.querySelector('.balloons-container');
-    if (!fieldBalloons) return;
-    const colorPalettes = ['#ff4fa0', '#8b5cf6', '#3b82f6', '#22c55e', '#f59e0b'];
-    for (let count = 0; count < 15; count++) {
-        const itemBalloon = document.createElement('div');
-        itemBalloon.className = 'balloon-item';
-        itemBalloon.style.background = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
-        itemBalloon.style.left = `${Math.random() * 95}%`;
-        itemBalloon.style.animationDuration = `${Math.random() * 6 + 9}s`;
-        itemBalloon.style.animationDelay = `${Math.random() * 5}s`;
-        fieldBalloons.appendChild(itemBalloon);
+        let angle = Math.random() * Math.PI * 2;
+        let velocity = Math.random() * 120 + 40;
+        p.style.setProperty('--x', Math.cos(angle) * velocity + 'px');
+        p.style.setProperty('--y', Math.sin(angle) * velocity + 'px');
+        
+        container.appendChild(p);
+        setTimeout(() => p.remove(), 1000);
     }
 }
- 
+
+// SECTION 6: GIFT BOX OPENING
+function openGift() {
+    document.getElementById('giftLid').classList.add('open');
+    setTimeout(() => nextSection(6, 7), 1200);
+}
+
+// SECTION 8: FLOATING HEARTS
+setInterval(() => {
+    const container = document.getElementById('heartsContainer');
+    if(!container) return;
+    let heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerHTML = '❤️';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+    heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+    container.appendChild(heart);
+    setTimeout(() => heart.remove(), 4000);
+}, 300);
