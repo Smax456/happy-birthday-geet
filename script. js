@@ -1,6 +1,4 @@
-// ==========================================================================
-// CENTRALIZED STATE NAVIGATION ARCHITECTURE
-// ==========================================================================
+// Central State Engine Manager
 const StateEngine = {
     currentPhase: 'loadingScreen',
     
@@ -24,23 +22,27 @@ const StateEngine = {
     }
 };
 
-// Start Journey Button Click Handler
-document.getElementById('startBtn').addEventListener('click', () => {
-    // Safely trigger audio stream initiation loop
-    const audio = document.getElementById('bgMusic');
-    audio.play().catch(err => console.log("Audio waiting for absolute focus: " + err));
-    
-    StateEngine.transition('storyScreen');
-    executeTypewriterAnimation();
+// Wait until the DOM is loaded to attach click events safely
+document.addEventListener('DOMContentLoaded', () => {
+    const startBtn = document.getElementById('startBtn');
+    if (startBtn) {
+        startBtn.addEventListener('click', () => {
+            const audio = document.getElementById('bgMusic');
+            if (audio) {
+                audio.play().catch(err => console.log("Audio waiting for interaction: " + err));
+            }
+            StateEngine.transition('storyScreen');
+            executeTypewriterAnimation();
+        });
+    }
 });
 
-// ==========================================================================
-// PHASE 2: IMMERSIVE TYPEWRITER STREAMER
-// ==========================================================================
+// Phase 2: Typewriter Logic
 function executeTypewriterAnimation() {
     const messageText = "Some people become family not because of blood... but because of the place they earn in our hearts.";
     let characterIndex = 0;
     const blockContainer = document.getElementById('storyText');
+    if (!blockContainer) return;
     blockContainer.innerHTML = ""; 
 
     const streamingClock = setInterval(() => {
@@ -49,33 +51,32 @@ function executeTypewriterAnimation() {
         if (characterIndex >= messageText.length) {
             clearInterval(streamingClock);
             const nextButton = document.getElementById('nextBtn');
-            nextButton.style.display = 'inline-block';
-            nextButton.onclick = () => {
-                StateEngine.transition('birthdayRoom');
-                generateRoomBalloons();
-            };
+            if (nextButton) {
+                nextButton.style.display = 'inline-block';
+                nextButton.onclick = () => {
+                    StateEngine.transition('birthdayRoom');
+                    generateRoomBalloons();
+                };
+            }
         }
     }, 45);
 }
 
-// ==========================================================================
-// PHASE 3: INTERACTIVE CAKE DESIGNER & SEQUENTIAL CANDLES
-// ==========================================================================
+// Phase 3: Room Decorations & Candles
 let appliedDecorationsCount = 0;
 const milestoneTargetCount = 4;
 
-document.querySelectorAll('.deco-btn').forEach(targetBtn => {
-    targetBtn.addEventListener('click', (event) => {
+document.addEventListener('click', (event) => {
+    if (event.target.classList.contains('deco-btn')) {
         const itemEmoji = event.target.getAttribute('data-item');
         const layerCanvas = document.getElementById('decorations-layer');
         
-        // Spawn decoration with absolute mapped offsets on top of the cream tier
         const decorationNode = document.createElement('span');
         decorationNode.className = 'placed-topping';
         decorationNode.innerText = itemEmoji;
         decorationNode.style.left = `${Math.random() * 70 + 15}%`;
         decorationNode.style.top = `${Math.random() * 30 + 35}%`;
-        layerCanvas.appendChild(decorationNode);
+        if (layerCanvas) layerCanvas.appendChild(decorationNode);
         
         event.target.disabled = true;
         appliedDecorationsCount++;
@@ -83,18 +84,19 @@ document.querySelectorAll('.deco-btn').forEach(targetBtn => {
         if (appliedDecorationsCount === milestoneTargetCount) {
             initiateCandleSequence();
         }
-    });
+    }
 });
 
 function initiateCandleSequence() {
-    document.getElementById('statusText').innerText = "✨ Truly Beautiful! Preparing your birthday candles...";
+    const statusText = document.getElementById('statusText');
+    if (statusText) statusText.innerText = "✨ Truly Beautiful! Preparing your birthday candles...";
     
     setTimeout(() => {
         const structuralGrid = document.getElementById('candlesContainer');
+        if (!structuralGrid) return;
         structuralGrid.classList.remove('hidden');
-        structuralGrid.innerHTML = ""; // Clean structural map array
+        structuralGrid.innerHTML = "";
 
-        // Instantly render exactly 14 nodes onto the DOM tree hidden
         for (let idx = 0; idx < 14; idx++) {
             const candleFrame = document.createElement('div');
             candleFrame.className = 'candle';
@@ -102,7 +104,6 @@ function initiateCandleSequence() {
             structuralGrid.appendChild(candleFrame);
         }
 
-        // Feature 1: Sequential staggered chronological ignitions line up
         const renderedCandlesList = document.querySelectorAll('.candles-grid .candle');
         renderedCandlesList.forEach((candleNode, index) => {
             setTimeout(() => {
@@ -110,35 +111,35 @@ function initiateCandleSequence() {
                 if (index === renderedCandlesList.length - 1) {
                     exposeActionControl();
                 }
-            }, index * 200); // 200ms sequential intervals
+            }, index * 200);
         });
     }, 1200);
 }
 
 function exposeActionControl() {
     const blowBtn = document.getElementById('actionBtn');
-    blowBtn.classList.remove('hidden');
-    blowBtn.onclick = executeCandleExtinction;
+    if (blowBtn) {
+        blowBtn.classList.remove('hidden');
+        blowBtn.onclick = executeCandleExtinction;
+    }
 }
 
 function executeCandleExtinction() {
-    // Feature 2: Smoke simulation after blowing out candles
     document.querySelectorAll('.candles-grid .candle').forEach(candleNode => {
         const activeFlame = candleNode.querySelector('.flame');
         if (activeFlame) {
-            activeFlame.remove(); // Kill the flame
-            
-            // Inject smoke tail element directly into parent layer
+            activeFlame.remove();
             const smokeElement = document.createElement('div');
             smokeElement.className = 'smoke-trail';
             candleNode.appendChild(smokeElement);
         }
     });
 
-    document.getElementById('statusText').innerText = "Make a wish, Geet! 🌌";
-    document.getElementById('actionBtn').classList.add('hidden');
+    const statusText = document.getElementById('statusText');
+    if (statusText) statusText.innerText = "Make a wish, Geet! 🌌";
+    const actionBtn = document.getElementById('actionBtn');
+    if (actionBtn) actionBtn.classList.add('hidden');
     
-    // Feature 3: Launch Premium Fireworks Canvas
     triggerPremiumFireworksCanvas();
     
     setTimeout(() => {
@@ -147,11 +148,10 @@ function executeCandleExtinction() {
     }, 4000);
 }
 
-// ==========================================================================
-// FIREWORKS ENGINE (HTML5 HIGH-PERFORMANCE CANVAS CORRIDOR)
-// ==========================================================================
+// Fireworks Engine
 function triggerPremiumFireworksCanvas() {
     const contextCanvas = document.getElementById('fireworksCanvas');
+    if (!contextCanvas) return;
     const ctx = contextCanvas.getContext('2d');
     contextCanvas.width = window.innerWidth;
     contextCanvas.height = window.innerHeight;
@@ -180,7 +180,7 @@ function triggerPremiumFireworksCanvas() {
         update() {
             this.x += this.velocityX;
             this.y += this.velocityY;
-            this.velocityY += 0.04; // Add gravity simulation lines
+            this.velocityY += 0.04;
             this.alpha -= this.decaySpeed;
         }
     }
@@ -206,32 +206,32 @@ function triggerPremiumFireworksCanvas() {
     executionLoop();
 }
 
-// ==========================================================================
-// PHASE 4: 3D PRESENT DEPLOYMENT & HEART RAIN CELEBRATION
-// ==========================================================================
+// Gift Module Interaction
 function initializeGiftModule() {
     const presentNode = document.querySelector('.gift-box-3d');
     const tipText = document.getElementById('giftHint');
     
-    presentNode.onclick = () => {
-        if (!presentNode.classList.contains('unfolded')) {
-            presentNode.classList.add('unfolded');
-            tipText.style.opacity = '0';
-            
-            setTimeout(() => {
-                presentNode.style.display = 'none';
-                const containerLetter = document.querySelector('.letter-wrapper');
-                containerLetter.classList.remove('hidden');
+    if (presentNode) {
+        presentNode.onclick = () => {
+            if (!presentNode.classList.contains('unfolded')) {
+                presentNode.classList.add('unfolded');
+                if (tipText) tipText.style.opacity = '0';
                 
-                // Final Step Trigger: Launch floating hearts rain loop
-                initiateHeartsRainLoop();
-            }, 900);
-        }
-    };
+                setTimeout(() => {
+                    presentNode.style.display = 'none';
+                    const containerLetter = document.querySelector('.letter-wrapper');
+                    if (containerLetter) containerLetter.classList.remove('hidden');
+                    initiateHeartsRainLoop();
+                }, 900);
+            }
+        };
+    }
 }
 
+// Decoration and Background Animators
 function initiateHeartsRainLoop() {
     const fieldContainer = document.querySelector('.hearts-rain-container');
+    if (!fieldContainer) return;
     setInterval(() => {
         const heartSpan = document.createElement('div');
         heartSpan.className = 'floating-heart';
@@ -247,6 +247,7 @@ function initiateHeartsRainLoop() {
 
 function generateRoomBalloons() {
     const fieldBalloons = document.querySelector('.balloons-container');
+    if (!fieldBalloons) return;
     const colorPalettes = ['#ff4fa0', '#8b5cf6', '#3b82f6', '#22c55e', '#f59e0b'];
     for (let count = 0; count < 15; count++) {
         const itemBalloon = document.createElement('div');
