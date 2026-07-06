@@ -1,0 +1,128 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    overflow:hidden;
+    background:#050816;
+    color:white;
+}
+
+button{
+    cursor:pointer;
+    border:none;
+    border-radius:30px;
+    padding:14px 28px;
+    font-size:18px;
+    background:linear-gradient(135deg,#8b5cf6,#ec4899);
+    color:white;
+}
+
+.screen{
+    width:100vw;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:25px;
+    position:relative;
+}
+
+h1{
+    font-size:48px;
+    margin-bottom:20px;
+}
+
+p{
+    font-size:22px;
+    max-width:700px;
+    line-height:1.8;
+}
+
+.stars{
+    position:absolute;
+    inset:0;
+    background-image:
+        radial-gradient(white 1px,transparent 1px);
+    background-size:45px 45px;
+    animation:twinkle 3s infinite alternate;
+}
+
+@keyframes twinkle{
+    from{opacity:.4;}
+    to{opacity:1;}
+}
+
+.cake{
+    position:relative;
+    width:240px;
+    height:220px;
+    margin:40px auto;
+}
+
+.plate{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:240px;
+    height:20px;
+    background:#ddd;
+    border-radius:50px;
+}
+
+.cake-base{
+    position:absolute;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:200px;
+    height:70px;
+    background:#d2691e;
+    border-radius:15px;
+}
+
+.cake-middle{
+    position:absolute;
+    bottom:80px;
+    left:50%;
+    transform:translateX(-50%);
+    width:160px;
+    height:55px;
+    background:#c85a17;
+    border-radius:15px;
+}
+
+.cake-top{
+    position:absolute;
+    bottom:130px;
+    left:50%;
+    transform:translateX(-50%);
+    width:120px;
+    height:45px;
+    background:#b84e10;
+    border-radius:15px;
+}
+
+.controls{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:20px;
+}
+
+#decorations{
+    margin-top:20px;
+    font-size:32px;
+    min-height:40px;
+}
+
+.deco{
+    margin:5px;
+  }
